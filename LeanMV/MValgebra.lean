@@ -21,12 +21,12 @@ some results.
 -- # Definition of MV-algebra
 
 class HasNegation (α : Type) where
-  negation : α → α
-prefix:100 "~" => HasNegation.negation
+  neg : α → α
+prefix:100 "~" => HasNegation.neg
 
-class MValgebra (α : Type) extends HasNegation α, AddCommMonoid α where
+class MValgebra (α : Type) extends AddCommMonoid α, HasNegation α where
   /- Negation is an involution. -/
-  neg_involutive : ∀ x : α, ~~x = x
+  neg_neg : ∀ x : α, ~~x = x
 
   /- The constant $1 = ∼0$ acts as an absorbing element for addition. -/
   add_one_eq_one : ∀ x : α, x + ~0 = ~0
@@ -39,8 +39,8 @@ namespace MValgebra
 section SimpLemmas
 variable {α : Type} [MValgebra α]
 
-@[simp] lemma neg_involutive_simp (x : α) : ~~x = x :=
-  MValgebra.neg_involutive x
+@[simp] lemma neg_neg_simp (x : α) : ~~x = x :=
+  MValgebra.neg_neg x
 
 @[simp] lemma add_one_eq_one_simp (x : α) : x + ~0 = ~0 :=
   MValgebra.add_one_eq_one x
@@ -108,7 +108,7 @@ instance : LE α :=
 lemma le_neg (x y : α) : x ≤ y → ~y ≤ ~x := by
   intro h
   rw [le_iff]
-  rw [neg_involutive, add_comm]
+  rw [neg_neg, add_comm]
   rw [h]
 
 /- Equivalent definitions of natural order. We give three more definitions and
@@ -217,9 +217,9 @@ infixl:68 " ⊔ " => sup
 
 lemma sup_comm (x y : α) : x ⊔ y = y ⊔ x := by
   calc
-    x ⊔ y = ~(~x + y) + y := by rw [sup, odot, neg_involutive]
+    x ⊔ y = ~(~x + y) + y := by rw [sup, odot, neg_neg]
     _ = ~(~y + x) + x := by rw [swap]
-    _ = ~(~y + ~~x) + x := by nth_rw 1 [← neg_involutive x]
+    _ = ~(~y + ~~x) + x := by nth_rw 1 [← neg_neg x]
 
 lemma le_sup_right (x y : α) : y ≤ x ⊔ y := by
   have y_le_sup : le_4 y (x ⊔ y) := by
@@ -245,8 +245,8 @@ lemma sup_le (x y z : α) : x ≤ z → y ≤ z → x ⊔ y ≤ z := by
   unfold sup
   rw [← y_le_z]
   rw [← add_assoc]
-  rw [← neg_involutive (x ⊙ ~y)]
-  nth_rw 2 [← neg_involutive y]
+  rw [← neg_neg (x ⊙ ~y)]
+  nth_rw 2 [← neg_neg y]
   rw [← odot]
   rw [← ominus]
   rw [swap']
@@ -276,7 +276,7 @@ lemma inf_comm (x y : α) : x ⊓ y = y ⊓ x := by
 
 lemma inf_le_left (x y : α) : x ⊓ y ≤ x := by
   rw [duality]
-  nth_rw 2 [← neg_involutive x]
+  nth_rw 2 [← neg_neg x]
   apply le_neg
   exact le_sup_left (~x) (~y)
 
@@ -293,7 +293,7 @@ lemma le_inf (z x y : α) : z ≤ x → z ≤ y → z ≤ x ⊓ y := by
     · exact z_le_x
     · exact z_le_y
   rw [duality]
-  rw [← neg_involutive z]
+  rw [← neg_neg z]
   apply le_neg
   exact h
 
