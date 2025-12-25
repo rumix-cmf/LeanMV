@@ -1,44 +1,11 @@
 /-
-# The finite Łukasiewicz MV-algebra Łₙ
+# Finite MV-algebras
 
-This file provides an implementation of the finite Łukasiewicz MV-algebra `Ł n`
-for some natural number `n`.
-
-## Carrier
-
-The underlying type is
-
-  `Ł n := Fin (n + 1)`
-
-which reprsents the finite chain `{0, 1, ..., n}`. An element `x : Ł n` should
-be thought of as the rational value `x / n`, but all operations are carried out
-purely in `ℕ`.
-
-## Operations
-
-The MV-algebra structure is defined using the standard Łukasiewicz operations:
-- truncated addition: `x ⊕ y = min n (x + y)`;
-- negation: `~x = n - x`;
-- zero: `0`.
-
-Truncated subtraction `x ⊖ y` is defined by `~(~x ⊕ ~y)` and shown to
-coincide with `max 0 (x - y)`.
-
-## Proof strategy
-
-All algebraic laws are proved by reducing them to arithmetic identities in `ℕ`,
-typically after applying `Fin.ext` to compare values.
-
-## Main result
-
-The final result is an instance:
-
-  `instance (n : ℕ) : MValgebra (Ł n)`
-
-which equips `Ł n` with the full structure of an MV-algebra.
+This file defines the finite MV-algebras `Ł n` arising from the Łukasiewicz
+chain on `n + 1` elements.
 -/
 
-import LeanMV.MValgebra
+import LeanMV.Algebra.MVAlgebra.Basic
 
 def Ł (n : ℕ) := Fin (n + 1)
 
@@ -78,6 +45,7 @@ def zero (n : ℕ) : Ł n :=
 theorem zero_add (n : ℕ) (x : Ł n) : zero n + x = x := by
   apply Fin.ext
   simp [add, zero]
+  apply Nat.min_eq_right
   exact x.is_le
 
 /- Zero is a right identity. -/
@@ -173,8 +141,8 @@ theorem swap (n : ℕ) (x y : Ł n) : (x ⊖ y) + y = (y ⊖ x) + x := by
     simp [h₀]
     simp [Nat.sub_add_cancel hyx]
 
-/- `Ł n` is an MV-algebra. -/
-instance (n : ℕ) : MValgebra (Ł n) :=
+/- `Ł n` is indeed an MV-algebra. -/
+instance (n : ℕ) : MVAlgebra (Ł n) :=
 {
   add := add n,
   add_assoc := add_assoc n,
