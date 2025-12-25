@@ -36,7 +36,7 @@ variable {α : Type} [MVAlgebra α]
 @[simp] lemma add_one_eq_one_simp (x : α) : x + ~0 = ~0 :=
   MVAlgebra.add_one_eq_one x
 
-@[simp] lemma add_neg_eq_one (x : α) : x + ~x = ~0 := by
+lemma add_neg_eq_one (x : α) : x + ~x = ~0 := by
   calc
     x + ~x = x + ~(x + 0) := by nth_rw 2 [← add_zero x]
     _ = x + ~(x + ~~0) := by simp
@@ -57,12 +57,14 @@ variable {α : Type} [MVAlgebra α]
 def odot (x y : α) : α := ~(~x + ~y)
 infixl:70 " ⊙ " => odot
 
-@[simp] lemma odot_assoc (x y z : α) : x ⊙ y ⊙ z = x ⊙ (y ⊙ z) := by
+/- Addition is associative. -/
+lemma odot_assoc (x y z : α) : x ⊙ y ⊙ z = x ⊙ (y ⊙ z) := by
   unfold odot
   simp
   rw [add_assoc]
 
-@[simp] lemma odot_comm (x y : α) : x ⊙ y = y ⊙ x := by
+/- Addition is commutative. -/
+lemma odot_comm (x y : α) : x ⊙ y = y ⊙ x := by
   unfold odot
   rw [add_comm]
 
@@ -70,10 +72,9 @@ def ominus (x y : α) : α := x ⊙ ~y
 infixl:65 " ⊖ " => ominus
 
 lemma ominus_anticomm (x y : α) : y ⊖ x = ~x ⊖ ~y := by
-  unfold ominus
-  simp
+  simp [ominus, odot_comm]
 
-/- We use $⊖$ to rewrite the third axiom. -/
+/- We use `⊖` to rewrite the third axiom. -/
 lemma swap' (x y : α) : (x ⊖ y) + y = (y ⊖ x) + x := by
   unfold ominus
   unfold odot

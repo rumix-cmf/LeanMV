@@ -113,11 +113,11 @@ instance : Lattice α :=
   le_inf := le_inf,
 }
 
-lemma le_top (x : α) : x ≤ ~0 := by
+@[simp] lemma le_top (x : α) : x ≤ ~0 := by
   apply (le_iff x (~0)).mpr
   rw [add_one_eq_one]
 
-lemma bot_le (x : α) : 0 ≤ x := by
+@[simp] lemma bot_le (x : α) : 0 ≤ x := by
   apply (le_iff 0 x).mpr
   rw [add_comm]
   rw [add_one_eq_one]

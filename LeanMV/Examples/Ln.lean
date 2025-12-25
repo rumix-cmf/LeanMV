@@ -42,14 +42,14 @@ def zero (n : ℕ) : Ł n :=
 ⟩
 
 /- Zero is a left identity. -/
-theorem zero_add (n : ℕ) (x : Ł n) : zero n + x = x := by
+@[simp] theorem zero_add (n : ℕ) (x : Ł n) : zero n + x = x := by
   apply Fin.ext
   simp [add, zero]
   apply Nat.min_eq_right
   exact x.is_le
 
 /- Zero is a right identity. -/
-theorem add_zero (n : ℕ) (x : Ł n) : x + zero n = x := by
+@[simp] theorem add_zero (n : ℕ) (x : Ł n) : x + zero n = x := by
   rw [add_comm]
   rw [zero_add]
 
@@ -67,7 +67,7 @@ def neg (n : ℕ) (x : Ł n) : Ł n :=
 ⟩
 
 /- Double negation. -/
-theorem neg_neg (n : ℕ) (x : Ł n) : neg n (neg n x) = x := by
+@[simp] theorem neg_neg (n : ℕ) (x : Ł n) : neg n (neg n x) = x := by
   apply Fin.ext
   simp [neg]
   exact Nat.sub_sub_self (x.is_le)

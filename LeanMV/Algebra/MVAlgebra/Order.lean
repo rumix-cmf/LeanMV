@@ -32,12 +32,14 @@ lemma le_neg (x y : α) : x ≤ y → ~y ≤ ~x := by
   rw [add_comm]
   exact h
 
-/- Equivalent definitions of natural order. We give three more definitions and
+/-
+Equivalent definitions of natural order. We give three more definitions and
 prove their equivalence:
 1. `~x ⊕ y = ~0`
 2. `x ⊖ y = 0`
 3. `x ⊕_(y ⊖ x) = y`
-4. `∃ z, x + z = y`. -/
+4. `∃ z, x + z = y`.
+-/
 def le_2 (x y : α) : Prop := x ⊖ y = 0
 def le_3 (x y : α) : Prop := x + (y ⊖ x) = y
 def le_4 (x y : α) : Prop := ∃ z, x + z = y
@@ -83,12 +85,13 @@ List.TFAE [le x y, le_2 x y, le_3 x y, le_4 x y] := by
   tfae_have 4 → 1 := le_41 x y
   tfae_finish
 
-/- $≤$ is indeed a partial order. -/
+/- `≤` is indeed a partial order. -/
 lemma le_refl (x : α) : x ≤ x := by
   rw [le_iff]
   rw [add_comm]
   rw [add_neg_eq_one]
 
+/- `≤` is antisymmetric. -/
 lemma le_antisymm (x y : α) : x ≤ y → y ≤ x → x = y := by
   intro x_le_y y_le_x
   have h₁ : x ≤ y ↔ le_3 x y := (le_charac x y).out 0 2
@@ -100,6 +103,7 @@ lemma le_antisymm (x y : α) : x ≤ y → y ≤ x → x = y := by
     _ = x + (y ⊖ x) := by rw [y_le_x]
     _ = y := by rw [x_le_y]
 
+/- `≤` is transitive. -/
 lemma le_trans (x y z : α) : x ≤ y → y ≤ z → x ≤ z := by
   intro h₁ h₂
   have h₁' : x ≤ y ↔ le_4 x y := (le_charac x y).out 0 3
