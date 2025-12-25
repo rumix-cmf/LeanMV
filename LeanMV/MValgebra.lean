@@ -1,6 +1,4 @@
-import Mathlib
-
-/-!
+/-
 # MV-algebras
 
 In this file, we define the structure of an **MV-algebra** by extending
@@ -11,12 +9,19 @@ some results.
 
 ## Main definitions
 * `MValgebra`: The core algebraic structure.
-* `odot, ominus`: Some auxilary operations.
+* `odot, ominus`: Auxilary operations.
 * `le`: The natural order on an MV-algebra.
 
-## Main results
+## Main result
 * The natural order on an MV-algebra determines a bounded lattice strtucture.
 -/
+
+import Mathlib.Algebra.Group.Defs
+import Mathlib.Order.Lattice
+import Mathlib.Order.Bounds.Basic
+import Mathlib.Tactic.NthRewrite
+import Mathlib.Logic.Basic
+import Mathlib.Tactic.TFAE
 
 -- # Definition of MV-algebra
 
@@ -103,13 +108,39 @@ instance : LE α :=
   le := le
 }
 /- Helper lemma to rewrite `≤` into its definition. -/
-@[simp] lemma le_iff (x y : α) : x ≤ y ↔ ~x + y = ~0 := Iff.rfl
+lemma le_iff (x y : α) : x ≤ y ↔ ~x + y = ~0 := Iff.rfl
 
 lemma le_neg (x y : α) : x ≤ y → ~y ≤ ~x := by
   intro h
-  rw [le_iff]
-  rw [neg_neg, add_comm]
-  rw [h]
+  simp [le_iff]
+  rw [add_comm]
+  exact h
+
+-- lemma le_neg (x y : α) : x ≤ y ↔ ~y ≤ ~x := by
+--   have h : x ≤ y → ~y ≤ ~x := by
+--     intro xy
+--     simp [le_iff]
+--     rw [add_comm]
+--     apply xy
+--   have h' : ~y ≤ ~x → x ≤ y := by
+--     intro nynx
+--     simp [le_iff]
+--     rw [add_comm, ← neg_neg y]
+--     apply nynx
+--   exact ⟨h,h'⟩
+
+-- lemma le_neg' (x y : α) : x ≤ ~y ↔ y ≤ ~x := by
+--   have h : x ≤ ~y → y ≤ ~x := by
+--     intro xny
+--     rw [le_neg]
+--     simp
+--     exact xny
+--   have h' : y ≤ ~x → x ≤ ~y := by
+--     intro ynx
+--     rw [le_neg]
+--     simp
+--     exact ynx
+--   exact ⟨h,h'⟩
 
 /- Equivalent definitions of natural order. We give three more definitions and
 prove their equivalence:
@@ -275,9 +306,13 @@ lemma inf_comm (x y : α) : x ⊓ y = y ⊓ x := by
   rw [sup_comm]
 
 lemma inf_le_left (x y : α) : x ⊓ y ≤ x := by
+  -- rw [duality]
+  -- nth_rw 2 [← neg_neg x]
+  -- apply le_neg
+  -- exact le_sup_left (~x) (~y)
   rw [duality]
   nth_rw 2 [← neg_neg x]
-  apply le_neg
+  apply le_neg (~x) (~x ⊔ ~y)
   exact le_sup_left (~x) (~y)
 
 lemma inf_le_right (x y : α) : x ⊓ y ≤ y := by
@@ -285,17 +320,25 @@ lemma inf_le_right (x y : α) : x ⊓ y ≤ y := by
   exact inf_le_left y x
 
 lemma le_inf (z x y : α) : z ≤ x → z ≤ y → z ≤ x ⊓ y := by
-  intro z_le_x z_le_y
-  apply le_neg at z_le_x
-  apply le_neg at z_le_y
-  have h : ~x ⊔ ~y ≤ ~z := by
-    apply sup_le
-    · exact z_le_x
-    · exact z_le_y
-  rw [duality]
-  rw [← neg_neg z]
-  apply le_neg
-  exact h
+  -- intro z_le_x z_le_y
+  -- apply le_neg at z_le_x
+  -- apply le_neg at z_le_y
+  -- have h : ~x ⊔ ~y ≤ ~z := by
+  --   apply sup_le
+  --   · exact z_le_x
+  --   · exact z_le_y
+  -- rw [duality]
+  -- rw [← neg_neg z]
+  -- apply le_neg
+  -- exact h
+  intro zx zy
+  rw [duality, ← neg_neg z]
+  apply le_neg (~x ⊔ ~y) (~z)
+  apply sup_le
+  · apply le_neg
+    exact zx
+  · apply le_neg
+    exact zy
 
 instance : Lattice α :=
 {
