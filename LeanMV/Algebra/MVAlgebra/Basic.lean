@@ -20,23 +20,23 @@ class MVAlgebra (α : Type) extends AddCommMonoid α, HasNegation α where
   neg_neg : ∀ x : α, ~~x = x
 
   /- The constant $1 = ∼0$ acts as an absorbing element for addition. -/
-  add_one_eq_one : ∀ x : α, x + ~0 = ~0
+  add_one : ∀ x : α, x + ~0 = ~0
 
   /- The key axiom that defines the MV-algebra structure. -/
   swap: ∀ x y : α, ~(~x + y) + y = ~(~y + x) + x
 
 namespace MVAlgebra
 
-section SimpLemmas
+section Basic
 variable {α : Type} [MVAlgebra α]
 
 @[simp] lemma neg_neg_simp (x : α) : ~~x = x :=
   MVAlgebra.neg_neg x
 
-@[simp] lemma add_one_eq_one_simp (x : α) : x + ~0 = ~0 :=
-  MVAlgebra.add_one_eq_one x
+@[simp] lemma add_one_simp (x : α) : x + ~0 = ~0 :=
+  MVAlgebra.add_one x
 
-lemma add_neg_eq_one (x : α) : x + ~x = ~0 := by
+lemma add_neg (x : α) : x + ~x = ~0 := by
   calc
     x + ~x = x + ~(x + 0) := by nth_rw 2 [← add_zero x]
     _ = x + ~(x + ~~0) := by simp
@@ -44,9 +44,9 @@ lemma add_neg_eq_one (x : α) : x + ~x = ~0 := by
       rw [add_comm]
       nth_rw 2 [add_comm]
     _ = ~(~x + ~0) + ~0 := by rw [swap]
-    _ = ~0 := by rw [add_one_eq_one]
+    _ = ~0 := by rw [add_one]
 
-end SimpLemmas
+end Basic
 
 -- ----------------------------------------------------------------------------
 -- # Auxiliary operations
