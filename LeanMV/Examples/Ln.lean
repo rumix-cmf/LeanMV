@@ -5,7 +5,7 @@ The finite MV-algebra Łₙ, defined (up to isomorphism) via Mundici's Γ
 functor: Łₙ₊₁ ≅ Γ(ℤ, n).
 -/
 
-import LeanMV.Algebra.MVAlgebra.FromGamma
+import LeanMV
 
 import Mathlib.Data.Int.Basic
 import Mathlib.Algebra.Ring.Defs

@@ -73,9 +73,9 @@ lemma le_41 (x y : α) : le_4 x y → x ≤ y := by
   rw [← hz]
   rw [← add_assoc]
   nth_rw 2 [add_comm]
-  rw [add_neg_eq_one]
+  rw [add_neg]
   rw [add_comm]
-  rw [add_one_eq_one]
+  rw [add_one]
 
 theorem le_charac (x y : α) :
 List.TFAE [le x y, le_2 x y, le_3 x y, le_4 x y] := by
@@ -89,7 +89,7 @@ List.TFAE [le x y, le_2 x y, le_3 x y, le_4 x y] := by
 lemma le_refl (x : α) : x ≤ x := by
   rw [le_iff]
   rw [add_comm]
-  rw [add_neg_eq_one]
+  rw [add_neg]
 
 /- `≤` is antisymmetric. -/
 lemma le_antisymm (x y : α) : x ≤ y → y ≤ x → x = y := by

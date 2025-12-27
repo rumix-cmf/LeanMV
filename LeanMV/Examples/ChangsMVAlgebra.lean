@@ -2,7 +2,7 @@
 # Chang's MV-algebra C
 -/
 
-import LeanMV.Algebra.MVAlgebra.FromGamma
+import LeanMV
 
 import Mathlib
 

@@ -115,12 +115,12 @@ instance : Lattice α :=
 
 @[simp] lemma le_top (x : α) : x ≤ ~0 := by
   apply (le_iff x (~0)).mpr
-  rw [add_one_eq_one]
+  rw [add_one]
 
 @[simp] lemma bot_le (x : α) : 0 ≤ x := by
   apply (le_iff 0 x).mpr
   rw [add_comm]
-  rw [add_one_eq_one]
+  rw [add_one]
 
 instance : BoundedOrder α :=
 {
